@@ -3,14 +3,15 @@ Godkänt
 Gå igenom koden och förstå allt.
 Se över befintlig kod om något behöver refaktoreras/ändras
 Om ny funktion läggs till, uppdatera hjälp
-Lägg till felhantering för inmatningsfel
-*klar* Lägg till funktion ny - skapa en ny uppgift
+*klar* Lägg till funktion ny - skapa en ny uppgift -- Får error när man skriver en en string under priority. Fixa detta *klar*
+*klar* fixat error med try/cath i TodoItem
 *klar* Lägg till funktion beskriv - lista alla Avcite uppgifter, status, prioritet, namn och beskrivning
-Lägg till funktion spara - spara uppgifterna
-Lägg till funktion ladda - ladda listan todo.lis med kommando
-Lägg till funktion aktivera /uppgift/ - sätt status på uppgift till Active
-Lägg till funktion klar /uppgift/ - sätt status på uppgift till Ready
-Lägg till funktion vänta /uppgift - sätt status på uppgift till Wating
+*klar* Lägg till funktion spara - spara uppgifterna
+*klar* Lägg till funktion ladda - ladda listan todo.lis med kommando // med skydsnät för övriga funktioner om ingen fil är laddad.
+*klar* Lägg till funktion aktivera /uppgift/ - sätt status på uppgift till Active //Mkt kod. Refaktorera *klar*
+*klar* Lägg till funktion klar /uppgift/ - sätt status på uppgift till Ready //Mkt kod. Refaktorera *klar*
+*klar* Lägg till funktion vänta /uppgift - sätt status på uppgift till Wating //Mkt kod. Refaktorera *klar*
+*klar* Refaktorera changeStatus
 *klar* ändra funktionen lista - så den visar alla ACtive uppgifter, status, prioritet och namn på uppgiften
 *klar* ändra funktionen lista - allt så den listar alla uppgifter oavsett status. Skall visa status,prioritet och namn på uppgiften
 
