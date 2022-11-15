@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace DTP_tenta
 {
@@ -42,11 +44,11 @@ namespace DTP_tenta
                 task = field[2];
                 taskDescription = field[3];
             }
-            public void Print(bool verbose = false)
+            public void Print(string command,bool verbose = false)
             {
                 string statusString = StatusToString(status);
                 Console.Write($"|{statusString,-12}|{priority,-6}|{task,-20}|");
-                if (verbose)
+                if (command == "beskriv" || command == "beskriv allt")
                     Console.WriteLine($"{taskDescription,-40}|");
                 else
                     Console.WriteLine();
@@ -69,41 +71,67 @@ namespace DTP_tenta
             sr.Close();
             Console.WriteLine($"Läste {numRead} rader.");
         }
-        private static void PrintHeadOrFoot(bool head, bool verbose)
+        private static void PrintHeadOrFoot(string command,bool head, bool verbose)
         {
             if (head)
             {
                 Console.Write("|status      |prio  |namn                |");
-                if (verbose) Console.WriteLine("beskrivning                             |");
+                if (command == "beskriv" || command == "beskriv allt") Console.WriteLine("beskrivning                             |");
                 else Console.WriteLine();
             }
             Console.Write("|------------|------|--------------------|");
-            if (verbose) Console.WriteLine("----------------------------------------|");
+            if (command == "beskriv" || command == "beskriv allt") Console.WriteLine("----------------------------------------|");
             else Console.WriteLine();
         }
-        private static void PrintHead(bool verbose)
+        private static void PrintHead(string command,bool verbose)
         {
-            PrintHeadOrFoot(head: true, verbose);
+            PrintHeadOrFoot(command,head: true,verbose);
         }
-        private static void PrintFoot(bool verbose)
+        private static void PrintFoot(string command, bool verbose)
         {
-            PrintHeadOrFoot(head: false, verbose);
+            PrintHeadOrFoot(command,head: false, verbose);
         }
-        public static void PrintTodoList(bool verbose = false)
+        public static void PrintTodoList(string command,bool verbose = false)
         {
-            PrintHead(verbose);
-            foreach (TodoItem item in list)
+            PrintHead(command,verbose);
+            if (!verbose)
             {
-                item.Print(verbose);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (Todo.list[i].status == Active)
+                    {
+                        Todo.list[i].Print(command);
+                    }
+                }
             }
-            PrintFoot(verbose);
+            else
+            {
+                foreach (TodoItem item in list)
+                {
+                    item.Print(command);
+                }
+            }
+            PrintFoot(command,verbose);
         }
         public static void PrintHelp()
         {
             Console.WriteLine("Kommandon:");
-            Console.WriteLine("hjälp    lista denna hjälp");
-            Console.WriteLine("lista    lista att-göra-listan");
-            Console.WriteLine("sluta    spara att-göra-listan och sluta");
+            Console.WriteLine("hjälp                  lista denna hjälp");
+            Console.WriteLine("beskriv                lista beskrivningar (visar enbart aktiva uppgifter)");
+            Console.WriteLine("beskriv allt           lista beskrivningar (visar alla uppgifter uppgifter)");
+            Console.WriteLine("lista                  lista att-göra-listan (visar enbart aktiva uppgifter)");
+            Console.WriteLine("lista allt             lista att-göra-listan (visar alla uppgifter)");
+            Console.WriteLine("sluta                  spara att-göra-listan och sluta");
+        }
+        public static void newEntry()
+        {
+            string uppgNamn = MyIO.ReadCommand("Uppgiftens namn: ");
+            string priority = MyIO.ReadCommand("Prioritet: ");
+            string beskrivning = MyIO.ReadCommand("Beskrivning: ");
+            //list.Add(new TodoItem(Convert.ToInt32(beskrivning), beskrivning));
+            string line = $"1|{priority}|{uppgNamn}|{beskrivning}";
+            TodoItem item = new TodoItem(line);
+            list.Add(item);
         }
     }
     class MainClass
@@ -126,12 +154,23 @@ namespace DTP_tenta
                     Console.WriteLine("Hej då!");
                     break;
                 }
+                else if (MyIO.Equals(command, "ny"))
+                {
+                    Todo.newEntry();
+                }
+                else if (MyIO.Equals(command, "beskriv"))
+                {
+                    if (MyIO.HasArgument(command, "allt"))
+                        Todo.PrintTodoList(command, verbose: true); //printar lista allt
+                    else
+                        Todo.PrintTodoList(command, verbose: false); //printar bara lista
+                }
                 else if (MyIO.Equals(command, "lista"))
                 {
                     if (MyIO.HasArgument(command, "allt"))
-                        Todo.PrintTodoList(verbose: true);
+                        Todo.PrintTodoList(command, verbose: true); //printar lista allt
                     else
-                        Todo.PrintTodoList(verbose: false);
+                        Todo.PrintTodoList(command, verbose: false); //printar bara lista
                 }
                 else
                 {

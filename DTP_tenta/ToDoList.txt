@@ -1,0 +1,26 @@
+Godkänt
+
+Gå igenom koden och förstå allt.
+Se över befintlig kod om något behöver refaktoreras/ändras
+Om ny funktion läggs till, uppdatera hjälp
+Lägg till felhantering för inmatningsfel
+*klar* Lägg till funktion ny - skapa en ny uppgift
+*klar* Lägg till funktion beskriv - lista alla Avcite uppgifter, status, prioritet, namn och beskrivning
+Lägg till funktion spara - spara uppgifterna
+Lägg till funktion ladda - ladda listan todo.lis med kommando
+Lägg till funktion aktivera /uppgift/ - sätt status på uppgift till Active
+Lägg till funktion klar /uppgift/ - sätt status på uppgift till Ready
+Lägg till funktion vänta /uppgift - sätt status på uppgift till Wating
+*klar* ändra funktionen lista - så den visar alla ACtive uppgifter, status, prioritet och namn på uppgiften
+*klar* ändra funktionen lista - allt så den listar alla uppgifter oavsett status. Skall visa status,prioritet och namn på uppgiften
+
+Väl godkänt
+
+Lägg till funktionen ny /uppgift/
+Lägg till funktionen redigera /uppgift/
+*klar* Lägg till funktionen beskriv allt
+Lägg till funktionen lista väntande
+Lägg till funktionen lista klara
+Lägg till funktionen spara /fil/
+Lägg till funktionen ladda /fil/
+Lägg till egen att-göra lista i programmet
