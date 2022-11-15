@@ -3,11 +3,13 @@ using System.IO;
 using System;
 using System.Data;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace DTP_tenta
 {
     public class Todo
     {
+        public static string loadedFile = null;
         public static List<TodoItem> list = new List<TodoItem>();
 
         public const int Active = 1;
@@ -55,33 +57,52 @@ namespace DTP_tenta
             public void Print(string command, bool verbose = false)
             {
                 string statusString = StatusToString(status);
-                Console.Write($"|{statusString,-12}|{priority,-6}|{task,-20}|");
+                Console.Write($"|{statusString,-12}|{priority,-6}|{task,-26}|");
                 if (command == "beskriv" || command == "beskriv allt")
-                    Console.WriteLine($"{taskDescription,-40}|");
+                    Console.WriteLine($"{taskDescription,-80}|");
                 else
                     Console.WriteLine();
             }
         }
-        public static void ReadListFromFile()
+        public static void ReadListFromFile(string command)
         {
-            string todoFileName = "todo.lis";
-            Console.Write($"Läser från fil {todoFileName} ... ");
-            StreamReader sr = new StreamReader(todoFileName);
-            int numRead = 0;
-
-            string line;
-            while ((line = sr.ReadLine()) != null)
+            string todoFileName = saveOrLoadFile(command);
+            loadedFile = todoFileName;
+            if (File.Exists(todoFileName))
             {
-                TodoItem item = new TodoItem(line);
-                list.Add(item);
-                numRead++;
+                Console.Write($"Läser från fil {todoFileName} ... ");
+                StreamReader sr = new StreamReader(todoFileName);
+                int numRead = 0;
+
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    TodoItem item = new TodoItem(line);
+                    list.Add(item);
+                    numRead++;
+                }
+                sr.Close();
+                Console.WriteLine($"Läste {numRead} rader.");
             }
-            sr.Close();
-            Console.WriteLine($"Läste {numRead} rader.");
+            else
+                Console.WriteLine("Filen fanns inte");
         }
-        public static void saveListToFile()
+
+        private static string saveOrLoadFile(string command)
         {
-            string todoFileName = "todo.lis";
+            string status = command.Trim();
+            string[] cwords = status.Split(' ');
+            string todoFileName = "";
+            if (cwords.Length == 1)
+                todoFileName = "todo.lis";
+            else if (cwords.Length == 2)
+                todoFileName = $"{cwords[1]}";
+
+            return todoFileName;
+        }
+        public static void saveListToFile(string command)
+        {
+            string todoFileName = saveOrLoadFile(command);
             Console.WriteLine($"Sparar i fil {todoFileName}...");
             int numSaved = 0;
             using (TextWriter sr = new StreamWriter(todoFileName))
@@ -99,12 +120,12 @@ namespace DTP_tenta
         {
             if (head)
             {
-                Console.Write("|status      |prio  |namn                |");
-                if (command == "beskriv" || command == "beskriv allt") Console.WriteLine("beskrivning                             |");
+                Console.Write("|status      |prio  |namn                      |");
+                if (command == "beskriv" || command == "beskriv allt") Console.WriteLine("beskrivning                                                                     |");
                 else Console.WriteLine();
             }
-            Console.Write("|------------|------|--------------------|");
-            if (command == "beskriv" || command == "beskriv allt") Console.WriteLine("----------------------------------------|");
+            Console.Write("|------------|------|--------------------------|");
+            if (command == "beskriv" || command == "beskriv allt") Console.WriteLine("--------------------------------------------------------------------------------|");
             else Console.WriteLine();
         }
         private static void PrintHead(string command, bool verbose)
@@ -147,39 +168,98 @@ namespace DTP_tenta
             Console.WriteLine("hjälp                  lista denna hjälp");
             Console.WriteLine("ny                     skapa en ny uppgift (sätts till aktiv)");
             Console.WriteLine("ny /uppgift/           skapa en ny uppgift med namnet /uppgift/ (sätts till aktiv)");
+            Console.WriteLine("redigera /uppgift/     redigera en uppgift med namnet /uppgift/");
+            Console.WriteLine("kopiera /uppgift/      kopiera en uppgift med namnet /uppgift/");
             Console.WriteLine("beskriv                lista beskrivningar (visar enbart aktiva uppgifter)");
             Console.WriteLine("beskriv allt           lista beskrivningar (visar alla uppgifter uppgifter)");
             Console.WriteLine("lista                  lista att-göra-listan (visar enbart aktiva uppgifter)");
             Console.WriteLine("lista allt             lista att-göra-listan (visar alla uppgifter)");
+            Console.WriteLine("ladda                  laddar filen todo.lis");
+            Console.WriteLine("ladda /fil/            ladda filen /fil/");
+            Console.WriteLine("spara                  sparar filen todo.lis");
+            Console.WriteLine("spara /fil/            sparar filen /fil/");
             Console.WriteLine("aktivera /uppgift/     sätt status på en uppgift till 'aktiv'");
             Console.WriteLine("klar /uppgift/         sätt status på en uppgift till 'avklarad'");
             Console.WriteLine("vänta /uppgift/        sätt status på en uppgift till 'väntande'");
             Console.WriteLine("sluta                  spara att-göra-listan och sluta");
         }
-        public static void newEntry(string command)
+        public static void newEntryOrEdit(string command)
         {
             string status = command.Trim();
             string[] cwords = status.Split(' ');
             string line = "";
-            if (cwords.Length == 1)
+            if (cwords[0] == "ny")
             {
-                string uppgNamn = MyIO.ReadCommand("Uppgiftens namn: ");
-                string priority = MyIO.ReadCommand("Prioritet: ");
-                string beskrivning = MyIO.ReadCommand("Beskrivning: ");
-                line = $"1|{priority}|{uppgNamn}|{beskrivning}";
+                if (cwords.Length == 1)
+                {
+                    string uppgNamn = MyIO.ReadCommand("Uppgiftens namn: ");
+                    string uppgift = uppgNamn.Trim();
+                    string[] uppgiftArr = uppgift.Split(' ');
+                    do
+                    {
+                        if (uppgiftArr.Length != 2)
+                        {
+                            Console.WriteLine("Uppgiften måste innehålla två ord (ex Köpa Kaffe)");
+                            break;
+                        }
+                        string priority = MyIO.ReadCommand("Prioritet: ");
+                        string beskrivning = MyIO.ReadCommand("Beskrivning: ");
+                        line = $"1|{priority}|{uppgNamn}|{beskrivning}";
+                        TodoItem item = new TodoItem(line);
+                        list.Add(item);
+                    } while (false);
+                }
+                else if (cwords.Length == 3)
+                {
+                    string priority = MyIO.ReadCommand("Prioritet: ");
+                    string beskrivning = MyIO.ReadCommand("Beskrivning: ");
+                    line = $"1|{priority}|{cwords[1]} {cwords[2]}|{beskrivning}";
+                    TodoItem item = new TodoItem(line);
+                    list.Add(item);
+                }
             }
-            else if (cwords.Length == 3)
-            {
-                string priority = MyIO.ReadCommand("Prioritet: ");
-                string beskrivning = MyIO.ReadCommand("Beskrivning: ");
-                line = $"1|{priority}|{cwords[1]} {cwords[2]}|{beskrivning}";
-            }
-            else if (cwords.Length != 3 || cwords.Length != 1)
+            else if (cwords.Length != 3 && cwords.Length != 1)
             {
                 Console.WriteLine("Uppgiften måste innehålla två ord (ex Köpa Kaffe)");
             }
-            TodoItem item = new TodoItem(line);
-            list.Add(item);
+            else if (cwords[0] == "redigera")
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    string uppgift = $"{cwords[1]} {cwords[2]}";
+                    if (uppgift == list[i].task.ToLower())
+                    {
+                        Console.WriteLine("Tryck [enter] om du inte vill ändra!");
+                        string uppgNamn = MyIO.ReadCommand($"Uppgiftens namn ({list[i].task}): ");
+                        string uppgift2 = uppgNamn.Trim();
+                        string[] cwords2 = uppgift2.Split(' ');
+                        if (cwords2.Length == 2)
+                            list[i].task = uppgNamn;
+                        else if (cwords2.Length != 2 && uppgNamn != "")
+                        {
+                            Console.WriteLine("Uppgiften måste innehålla två ord (ex Köpa Kaffe)");
+                            break;
+                        }
+                        string status2 = MyIO.ReadCommand($"Status 'aktiv/klar/vänta' ({StatusToString(list[i].status)}): ");
+                        string priority = MyIO.ReadCommand($"Prioritet ({list[i].priority}): ");
+                        string beskrivning = MyIO.ReadCommand($"Beskrivning ({list[i].taskDescription}): ");
+                        if (status2 != "")
+                        {
+                            if (status2 == "klar")
+                                status2 = "3";
+                            else if (status2 == "aktiv")
+                                status2 = "1";
+                            else if (status2 == "vänta")
+                                status2 = "2";
+                            list[i].status = Convert.ToInt32(status2);
+                        }
+                        if (priority != "")
+                            list[i].priority = Convert.ToInt32(priority);
+                        if (beskrivning != "")
+                            list[i].taskDescription = beskrivning;
+                    }
+                }
+            }
         }
         public static void changeStatusOrCopy(string command)
         {
@@ -232,6 +312,7 @@ namespace DTP_tenta
         {
             public static void Main(string[] args)
             {
+                Console.SetWindowSize(150, 30);
                 Console.WriteLine("Välkommen till att-göra-listan!");
                 Todo.PrintHelp();
                 string command;
@@ -245,11 +326,16 @@ namespace DTP_tenta
                     else if (MyIO.Equals(command, "sluta"))
                     {
                         Console.WriteLine("Hej då!");
+                        Todo.saveListToFile($"spara {Todo.loadedFile}");
                         break;
                     }
                     else if (MyIO.Equals(command, "ny"))
                     {
-                        Todo.newEntry(command);
+                        Todo.newEntryOrEdit(command);
+                    }
+                    else if (MyIO.Equals(command, "redigera"))
+                    {
+                        Todo.newEntryOrEdit(command);
                     }
                     else if (MyIO.Equals(command, "kopiera"))
                     {
@@ -257,25 +343,25 @@ namespace DTP_tenta
                     }
                     else if (MyIO.Equals(command, "spara"))
                     {
-                        Todo.saveListToFile();
+                        Todo.saveListToFile(command);
                     }
                     else if (MyIO.Equals(command, "ladda"))
                     {
-                        Todo.ReadListFromFile();
+                        Todo.ReadListFromFile(command);
                     }
                     else if (MyIO.Equals(command, "beskriv"))
                     {
                         if (MyIO.HasArgument(command, "allt"))
-                            Todo.PrintTodoList(command, verbose: true); //printar lista allt
+                            Todo.PrintTodoList(command, verbose: true);
                         else
-                            Todo.PrintTodoList(command, verbose: false); //printar bara lista
+                            Todo.PrintTodoList(command, verbose: false);
                     }
                     else if (MyIO.Equals(command, "lista"))
                     {
                         if (MyIO.HasArgument(command, "allt"))
-                            Todo.PrintTodoList(command, verbose: true); //printar lista allt
+                            Todo.PrintTodoList(command, verbose: true);
                         else
-                            Todo.PrintTodoList(command, verbose: false); //printar bara lista
+                            Todo.PrintTodoList(command, verbose: false);
                     }
                     else if (MyIO.Equals(command, "aktivera"))
                     {

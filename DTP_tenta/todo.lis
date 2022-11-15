@@ -1,4 +1,25 @@
-1|1|köpa kaffe|Willys? Billigaste!
-1|1|köpa toapapper|Willys? Extra papper!
-2|3|köpa bordslampa|IKEA art. nr. 905.108.94
-2|2|rensa skrivbordet|NEeeeejjj!
+3|1|Förstå Kod|Gå igenom kod och förstå allt
+2|1|Refaktorera|Refaktorera koden löpande
+3|1|Uppdetera Hjälp|Uppdatera hjälp medtoden. Görs löpande
+3|1|Funktion Ny|Lägg till funktionen ny. Skapa ny uppgift
+3|1|Fixa.error TodoItem|Fixa error med try/cath i Todo.Item
+3|1|Funktion beskriv|Lägg till funktion beskriv
+3|1|Funktion spara|Lägg till funktionen spara som sparar todo.lis
+3|1|Funktion ladda|Lägg till funktionen ladda som laddar todo.lis
+3|1|Funktion sluta|Lägg till så det sparas till senast laddade fil när man kör kommandot sluta
+3|1|Funktion aktivera.uppgift|Lägg till funktionen aktivera /uppgift/ som aktiverar en uppgift
+3|1|Funktion klar.uppgift|Lägg till funktionen klar /uppgift/ som sätter status på uppgift till klar
+3|1|funktion vänta.uppgift|Lägg till funktionen vänta /uppgift/ som sätter status på uppgift till väntande
+3|1|Refaktorerar changeStatus|Refaktorera metoden changeStatus(). Mkt kod
+3|1|Ändra funktion.lista|Ändra funktionen så den visar rätt enligt kravspec
+3|1|Ändra funktion.lista.allt|Ändra funktionen så den visar rätt enligt kravspec
+3|1|Funktion ny.uppgift|Lägg till funktionen ny /uppgift/
+3|1|Funktion redigera.uppgift|Lägg till funktionen redigera /uppgift/
+3|1|Funktion kopiera.uppgift|Lägg till funktionen kopiera /uppgift/
+3|1|Funktion beskriv.allt|Lägg till funktionen beskriv allt
+1|2|Funktion lista.väntande|Lägg till funktionen lista /väntande/ som visar alla väntande uppgifter
+1|2|Funktion lista.klara|Lägg till funktionen lista /klara/ som visar alla klara uppgifter
+3|1|Funktion spara.fil|Lägg till funktionen spara /fil/ som sparar /fil/
+3|1|Funktion ladda.fil|Lägg till funktion ladda /fil/ som laddar /fil/
+3|1|Uppdatera Todo.lis|Uppdatera Todo.lis med ToDoList.txt
+3|1|Ändra beskriv.allt|För mkt text? Måste manuelt förstora CMD fönstret för att se allt.

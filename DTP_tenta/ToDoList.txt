@@ -18,15 +18,17 @@ Godkänt
 Väl godkänt
 
 *klar* Lägg till funktionen ny /uppgift/ //refaktorera. Kan få bort dubbletter av kod i metoden newEntry()
-Lägg till funktionen redigera /uppgift/
+*klar* Lägg till funktionen redigera /uppgift/
 *klar* Lägg till funktionen kopiera /uppgift/ //uppdaterade metoden changeStatus() så den även klarar av kommandot kopiera. Bytt namn på metoden.
 *klar* Lägg till funktionen beskriv allt
 Lägg till funktionen lista väntande
 Lägg till funktionen lista klara
-Lägg till funktionen spara /fil/
-Lägg till funktionen ladda /fil/
+*klar* Lägg till funktionen spara /fil/
+*klar* Lägg till funktionen ladda /fil/
 Lägg till egen att-göra lista i programmet
 
 
-
+redigera uppgift
+spara fil
+ladda fil
 
