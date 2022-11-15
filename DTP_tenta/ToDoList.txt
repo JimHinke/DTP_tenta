@@ -1,8 +1,8 @@
 Godkänt
 
-Gå igenom koden och förstå allt.
-Se över befintlig kod om något behöver refaktoreras/ändras
-Om ny funktion läggs till, uppdatera hjälp
+*klar* Gå igenom koden och förstå allt.
+- görs löpande- Se över befintlig kod om något behöver refaktoreras/ändras
+- görs löpande - Om ny funktion läggs till, uppdatera hjälp
 *klar* Lägg till funktion ny - skapa en ny uppgift -- Får error när man skriver en en string under priority. Fixa detta *klar*
 *klar* fixat error med try/cath i TodoItem
 *klar* Lägg till funktion beskriv - lista alla Avcite uppgifter, status, prioritet, namn och beskrivning
@@ -17,11 +17,16 @@ Om ny funktion läggs till, uppdatera hjälp
 
 Väl godkänt
 
-Lägg till funktionen ny /uppgift/
+*klar* Lägg till funktionen ny /uppgift/ //refaktorera. Kan få bort dubbletter av kod i metoden newEntry()
 Lägg till funktionen redigera /uppgift/
+*klar* Lägg till funktionen kopiera /uppgift/ //uppdaterade metoden changeStatus() så den även klarar av kommandot kopiera. Bytt namn på metoden.
 *klar* Lägg till funktionen beskriv allt
 Lägg till funktionen lista väntande
 Lägg till funktionen lista klara
 Lägg till funktionen spara /fil/
 Lägg till funktionen ladda /fil/
 Lägg till egen att-göra lista i programmet
+
+
+
+

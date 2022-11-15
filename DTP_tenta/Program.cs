@@ -146,6 +146,7 @@ namespace DTP_tenta
             Console.WriteLine("Kommandon:");
             Console.WriteLine("hjälp                  lista denna hjälp");
             Console.WriteLine("ny                     skapa en ny uppgift (sätts till aktiv)");
+            Console.WriteLine("ny /uppgift/           skapa en ny uppgift med namnet /uppgift/ (sätts till aktiv)");
             Console.WriteLine("beskriv                lista beskrivningar (visar enbart aktiva uppgifter)");
             Console.WriteLine("beskriv allt           lista beskrivningar (visar alla uppgifter uppgifter)");
             Console.WriteLine("lista                  lista att-göra-listan (visar enbart aktiva uppgifter)");
@@ -155,69 +156,78 @@ namespace DTP_tenta
             Console.WriteLine("vänta /uppgift/        sätt status på en uppgift till 'väntande'");
             Console.WriteLine("sluta                  spara att-göra-listan och sluta");
         }
-        public static void newEntry()
-        {
-            string uppgNamn = MyIO.ReadCommand("Uppgiftens namn: ");
-            string priority = MyIO.ReadCommand("Prioritet: ");
-            string beskrivning = MyIO.ReadCommand("Beskrivning: ");
-            string line = $"1|{priority}|{uppgNamn}|{beskrivning}";
-            TodoItem item = new TodoItem(line);
-            list.Add(item);
-        }
-        public static void changeStatus(string command)
+        public static void newEntry(string command)
         {
             string status = command.Trim();
             string[] cwords = status.Split(' ');
-            string uppgift = $"{cwords[1]} {cwords[2]}";
-            Console.WriteLine(uppgift);
-            for (int i = 0; i < Todo.list.Count; i++)
+            string line = "";
+            if (cwords.Length == 1)
             {
-                if (uppgift == Todo.list[i].task)
-                {
-                    if (command == "aktivera")
-                    {
-                        Todo.list[i].status = Todo.Active;
-                        Console.WriteLine($"Du ändrade status på: {Todo.list[i].task} till aktiv");
-                    }
-                    else if (command == "klar")
-                    {
-                        Todo.list[i].status = Todo.Ready;
-                        Console.WriteLine($"Du ändrade status på: {Todo.list[i].task} till avklarad");
-                    }
-                    else if (command == "vänta")
-                    {
-                        Todo.list[i].status = Todo.Waiting;
-                        Console.WriteLine($"Du ändrade status på: {Todo.list[i].task} till väntande");
-                    }
-                }
+                string uppgNamn = MyIO.ReadCommand("Uppgiftens namn: ");
+                string priority = MyIO.ReadCommand("Prioritet: ");
+                string beskrivning = MyIO.ReadCommand("Beskrivning: ");
+                line = $"1|{priority}|{uppgNamn}|{beskrivning}";
             }
+            else if (cwords.Length == 3)
+            {
+                string priority = MyIO.ReadCommand("Prioritet: ");
+                string beskrivning = MyIO.ReadCommand("Beskrivning: ");
+                line = $"1|{priority}|{cwords[1]} {cwords[2]}|{beskrivning}";
+            }
+            else if (cwords.Length != 3 || cwords.Length != 1)
+            {
+                Console.WriteLine("Uppgiften måste innehålla två ord (ex Köpa Kaffe)");
+            }
+            TodoItem item = new TodoItem(line);
+            list.Add(item);
         }
-
-        private static void waitOrReadyOrActive(string uppgift, string command)
+        public static void changeStatusOrCopy(string command)
         {
-            for (int i = 0; i < Todo.list.Count; i++)
+            string status = command.Trim();
+            string[] cwords = status.Split(' ');
+            bool found = false;
+            if (cwords.Length == 1)
+                Console.WriteLine("Du måste ange en uppgift");
+            else if (cwords.Length == 3)
             {
-                if (uppgift == Todo.list[i].task)
+                string uppgift = $"{cwords[1]} {cwords[2]}";
+                for (int i = 0; i < list.Count; i++)
                 {
-                    if (command == "aktivera")
+                    if (uppgift == list[i].task.ToLower())
                     {
-                        Todo.list[i].status = Todo.Active;
-                        Console.WriteLine($"Du ändrade status på: {Todo.list[i].task} till aktiv");
-                    }
-                    else if (command == "klar")
-                    {
-                        Todo.list[i].status = Todo.Ready;
-                        Console.WriteLine($"Du ändrade status på: {Todo.list[i].task} till avklarad");
-                    }
-                    else if (command == "vänta")
-                    {
-                        Todo.list[i].status = Todo.Waiting;
-                        Console.WriteLine($"Du ändrade status på: {Todo.list[i].task} till väntande");
+                        if (cwords[0] == "aktivera")
+                        {
+                            list[i].status = Todo.Active;
+                            Console.WriteLine($"Du ändrade status på: '{Todo.list[i].task}' till 'aktiv'");
+                            found = true;
+
+                        }
+                        else if (cwords[0] == "klar")
+                        {
+                            list[i].status = Todo.Ready;
+                            Console.WriteLine($"Du ändrade status på: '{Todo.list[i].task}' till 'avklarad'");
+                            found = true;
+                        }
+                        else if (cwords[0] == "vänta")
+                        {
+                            list[i].status = Todo.Waiting;
+                            Console.WriteLine($"Du ändrade status på: '{Todo.list[i].task}' till 'väntande'");
+                            found = true;
+                        }
+                        else if (cwords[0] == "kopiera")
+                        {
+                            string line = $"{Todo.Active}|{list[i].priority}|{list[i].task}, 2|{list[i].taskDescription}";
+                            TodoItem item = new TodoItem(line);
+                            list.Add(item);
+                            found = true;
+                            Console.WriteLine($"Du kopierade {list[i].task}");
+                        }
                     }
                 }
             }
+            if (!found && cwords.Length > 1)
+                Console.WriteLine($"Uppgiften du angav finns inte. Testa igen");
         }
-
         class MainClass
         {
             public static void Main(string[] args)
@@ -227,7 +237,7 @@ namespace DTP_tenta
                 string command;
                 do
                 {
-                    command = MyIO.ReadCommand("> ");
+                    command = MyIO.ReadCommand("> ").ToLower();
                     if (MyIO.Equals(command, "hjälp"))
                     {
                         Todo.PrintHelp();
@@ -239,7 +249,11 @@ namespace DTP_tenta
                     }
                     else if (MyIO.Equals(command, "ny"))
                     {
-                        Todo.newEntry();
+                        Todo.newEntry(command);
+                    }
+                    else if (MyIO.Equals(command, "kopiera"))
+                    {
+                        changeStatusOrCopy(command);
                     }
                     else if (MyIO.Equals(command, "spara"))
                     {
@@ -265,15 +279,15 @@ namespace DTP_tenta
                     }
                     else if (MyIO.Equals(command, "aktivera"))
                     {
-                        changeStatus(command);
+                        changeStatusOrCopy(command);
                     }
                     else if (MyIO.Equals(command, "vänta"))
                     {
-                        changeStatus(command);
+                        changeStatusOrCopy(command);
                     }
                     else if (MyIO.Equals(command, "klar"))
                     {
-                        changeStatus(command);
+                        changeStatusOrCopy(command);
                     }
                     else
                     {
