@@ -105,16 +105,16 @@ namespace DTP_tenta
             string todoFileName = saveOrLoadFile(command);
             Console.WriteLine($"Sparar i fil {todoFileName}...");
             int numSaved = 0;
-            using (TextWriter sr = new StreamWriter(todoFileName))
-            {
-                for (int i = 0; i < list.Count; i++)
+                using (TextWriter sr = new StreamWriter(todoFileName))
                 {
-                    string line = $"{list[i].status}|{list[i].priority}|{list[i].task}|{list[i].taskDescription}";
-                    sr.WriteLine(line);
-                    numSaved++;
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        string line = $"{list[i].status}|{list[i].priority}|{list[i].task}|{list[i].taskDescription}";
+                        sr.WriteLine(line);
+                        numSaved++;
+                    }
                 }
-            }
-            Console.WriteLine($"Sparade {numSaved} rader.");
+                Console.WriteLine($"Sparade {numSaved} rader.");
         }
         private static void PrintHeadOrFoot(string command, bool head, bool verbose)
         {

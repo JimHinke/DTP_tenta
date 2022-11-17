@@ -25,10 +25,13 @@ Lägg till funktionen lista väntande
 Lägg till funktionen lista klara
 *klar* Lägg till funktionen spara /fil/
 *klar* Lägg till funktionen ladda /fil/
-Lägg till egen att-göra lista i programmet
+*klar* Lägg till egen att-göra lista i programmet
 
+TBD - upptäckt en bugg i sluta - funktionen. Om man slutar utan att ha laddat en fil så sparas listan list i todo.lis.
+Har man då valt att göra en ny att-göra-lista och trycker sluta så skrivs todo.lis över. Vilket kanske inte är önskvärt.
+Detta går att lösa med en bool, typ isLoaded = false. Sätts true när man laddar en fil. Om isLoaded är false och man slutar och list != null
+så får man frågan om man vill spara listan innan programmet stängs ner. Om isLoaded är false och list = null så sparas körs inte spara metoden.
 
-redigera uppgift
-spara fil
-ladda fil
-
+TBD - Programmet går säkerligen att refaktorera ytterligare. Försökte refaktorera ett par av mina command.split delar jag har i ett par av mina metoder 
+men fick då felmeddelandet "Process is terminated due to StackOverflowException". Oklart vad som orsakat detta men bör vara att metoden överlappas 
+och får någon overflow på något sätt. Detta bör även ses över så även detta refaktoreras då samma kod används på flera ställen.
